@@ -1,5 +1,6 @@
 package io.axoniq.demo.sqwebinar.gui;
 
+import com.vaadin.annotations.Push;
 import com.vaadin.server.DefaultErrorHandler;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.ValueChangeMode;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @SpringUI
 @XSlf4j
 @RequiredArgsConstructor
+@Push
 public class GiftCardUI extends UI {
 
     private final CommandGateway commandGateway;
@@ -113,13 +115,15 @@ public class GiftCardUI extends UI {
     private Layout summaryLayout() {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSizeFull();
-        Button refreshButton = new Button("Refresh");
-        refreshButton.addClickListener(event -> cardSummaryDataProvider.refreshAll());
         Grid summaryGrid = summaryGrid();
-        layout.addComponents(refreshButton, summaryGrid);
-        layout.setExpandRatio(refreshButton, 0);
-        layout.setExpandRatio(summaryGrid, 1);
+        layout.addComponent(summaryGrid);
         return layout;
+    }
+
+    @Override
+    public void close() {
+        cardSummaryDataProvider.close();
+        super.close();
     }
 
     private Grid summaryGrid() {

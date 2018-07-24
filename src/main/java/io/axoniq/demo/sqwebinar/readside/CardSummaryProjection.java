@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.XSlf4j;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
+import org.axonframework.queryhandling.QueryUpdateEmitter;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -18,11 +19,18 @@ import java.util.List;
 public class CardSummaryProjection {
 
     private final EntityManager entityManager;
+    private final QueryUpdateEmitter queryUpdateEmitter;
 
     @EventHandler
     public void on(IssuedEvent event) {
         log.trace("projecting {}", event);
         entityManager.persist(new CardSummary(event.getId(), event.getAmount(), event.getAmount()));
+
+        queryUpdateEmitter.emit(
+                CountCardSummariesQuery.class,
+                query -> event.getId().startsWith(query.getFilter().getIdStartsWith()),
+                new CardCountChangedUpdate()
+        );
     }
 
     @EventHandler
@@ -30,6 +38,11 @@ public class CardSummaryProjection {
         log.trace("projecting {}", event);
         CardSummary summary = entityManager.find(CardSummary.class, event.getId());
         summary.setRemainingValue(summary.getRemainingValue().subtract(event.getAmount()));
+        queryUpdateEmitter.emit(
+                FetchCardSummariesQuery.class,
+                query -> event.getId().startsWith(query.getFilter().getIdStartsWith()),
+                summary
+        );
     }
 
     @QueryHandler
