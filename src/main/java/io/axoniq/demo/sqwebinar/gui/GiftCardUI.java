@@ -114,9 +114,7 @@ public class GiftCardUI extends UI {
         HorizontalLayout layout = new HorizontalLayout();
         layout.setSizeFull();
         Button refreshButton = new Button("Refresh");
-        refreshButton.addClickListener(event -> {
-           cardSummaryDataProvider.refreshAll();
-        });
+        refreshButton.addClickListener(event -> cardSummaryDataProvider.refreshAll());
         Grid summaryGrid = summaryGrid();
         layout.addComponents(refreshButton, summaryGrid);
         layout.setExpandRatio(refreshButton, 0);

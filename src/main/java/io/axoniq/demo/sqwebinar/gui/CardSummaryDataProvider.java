@@ -13,15 +13,11 @@ import lombok.extern.slf4j.XSlf4j;
 import org.axonframework.queryhandling.QueryGateway;
 import org.axonframework.queryhandling.responsetypes.ResponseTypes;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
 @XSlf4j
 @RequiredArgsConstructor
 public class CardSummaryDataProvider extends AbstractBackEndDataProvider<CardSummary, Void> {
-
-    private static final ExecutorService executorService = Executors.newCachedThreadPool();
 
     private final QueryGateway queryGateway;
 
