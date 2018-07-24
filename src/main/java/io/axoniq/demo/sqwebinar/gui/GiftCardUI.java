@@ -77,9 +77,9 @@ public class GiftCardUI extends UI {
         submit.addClickListener(evt -> {
             for(int i = 0; i < Integer.parseInt(number.getValue()); i++) {
                 String id = UUID.randomUUID().toString().substring(0, 11).toUpperCase();
-                commandGateway.sendAndWait(new IssueCommand(id, new BigDecimal(amount.getValue())));
+                commandGateway.send(new IssueCommand(id, new BigDecimal(amount.getValue())));
             }
-            Notification.show("Success", Notification.Type.HUMANIZED_MESSAGE);
+            Notification.show("Issue commands sent", Notification.Type.HUMANIZED_MESSAGE);
         });
 
         FormLayout form = new FormLayout();
